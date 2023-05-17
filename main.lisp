@@ -168,7 +168,8 @@
   (draw-list buffer
              '("    ・Lisp ModeとLSPの統合"
                "    ・Lisp ModeとGraphics機能の統合"
-               "    ・Trial(ゲームエンジン)との統合")))
+               "    ・Trial(ゲームエンジン)との統合"
+               "    ・ドキュメントの整備")))
 
 (def-page (page-6 6) (buffer)
   (draw-string buffer
