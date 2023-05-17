@@ -37,6 +37,31 @@
      (defun ,name ()
        (call-with-page ,page-index (lambda (,buffer) ,@body)))))
 
+(define-major-mode slide-mode ()
+    (:name "Slide"
+     :keymap *slide-mode-keymap*))
+
+(define-key *slide-mode-keymap* "Right" 'slide-next)
+(define-key *slide-mode-keymap* "Left" 'slide-previous)
+(define-key *slide-mode-keymap* "n" 'slide-next)
+(define-key *slide-mode-keymap* "p" 'slide-previous)
+(define-key *slide-mode-keymap* "Space" 'slide-next)
+(define-key *slide-mode-keymap* "Backspace" 'slide-previous)
+
+(define-command slide-next () ()
+  (when-let* ((page-index (buffer-page-index (current-buffer)))
+              (buffer (find-page-buffer (1+ page-index))))
+    (switch-to-buffer buffer)))
+
+(define-command slide-previous () ()
+  (when-let* ((page-index (buffer-page-index (current-buffer)))
+              (buffer (find-page-buffer (1- page-index))))
+    (switch-to-buffer buffer)))
+
+(define-command slide () ()
+  (mapc #'funcall *page-names*))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar *h1-font*
   (sdl2-ttf:open-font (path "NotoSansCJK-Regular.ttc") 300))
 
@@ -186,27 +211,3 @@
               *opencollective-qrcode*
               :x 1500
               :y 500))
-
-(define-major-mode slide-mode ()
-    (:name "Slide"
-     :keymap *slide-mode-keymap*))
-
-(define-key *slide-mode-keymap* "Right" 'slide-next)
-(define-key *slide-mode-keymap* "Left" 'slide-previous)
-(define-key *slide-mode-keymap* "n" 'slide-next)
-(define-key *slide-mode-keymap* "p" 'slide-previous)
-(define-key *slide-mode-keymap* "Space" 'slide-next)
-(define-key *slide-mode-keymap* "Backspace" 'slide-previous)
-
-(define-command slide-next () ()
-  (when-let* ((page-index (buffer-page-index (current-buffer)))
-              (buffer (find-page-buffer (1+ page-index))))
-    (switch-to-buffer buffer)))
-
-(define-command slide-previous () ()
-  (when-let* ((page-index (buffer-page-index (current-buffer)))
-              (buffer (find-page-buffer (1- page-index))))
-    (switch-to-buffer buffer)))
-
-(define-command slide () ()
-  (mapc #'funcall *page-names*))
