@@ -1,3 +1,4 @@
 (defsystem "lem-lispmeetup-slide"
   :serial t
-  :components ((:file "main")))
+  :components ((:file "slide")
+               (:file "main")))
