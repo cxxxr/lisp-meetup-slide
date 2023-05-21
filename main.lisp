@@ -24,10 +24,17 @@
 
 (defvar *icon-image* (load-image (path "icon.png")))
 
+(defvar *support-languages-image* (load-image (path "support-languages.png")))
+
 (defvar *cloc-image* (load-image (path "cloc.png")))
 (defvar *github-contributors-image* (load-image (path "contributors.png")))
 
 (defvar *architecture-image* (load-image (path "architecture.png")))
+
+(defvar *keyboard-layout-image* (load-image (path "keyboard-layout.png")))
+
+(defvar *sdl-error-1-image* (load-image (path "sdl-error-1.png")))
+(defvar *sdl-error-2-image* (load-image (path "sdl-error-2.png")))
 
 (defvar *discord-qrcode-image* (load-image (path "discord.png")))
 (defvar *opencollective-qrcode-image* (load-image (path "opencollective.png")))
@@ -66,18 +73,18 @@
   (draw-string buffer
                "Lisp meetup #109"
                50
-               1100
+               1050
                :font *normal-font*
                :color *foreground-color*)
   (draw-string buffer
                "2023-05-27"
                50
-               1250
+               1200
                :font *normal-font*
                :color *foreground-color*)
   (draw-string buffer
                "cxxxr"
-               1800
+               2200
                1200
                :font *normal-font*
                :color *foreground-color*))
@@ -88,7 +95,6 @@
   (draw-list buffer
              '("・Lemについての紹介"
                "・ver 2.0で追加した機能について"
-               "・動かしてみる"
                "・今後の展望")))
 
 (lem-slide:define-page about-lem-page (buffer)
@@ -100,13 +106,15 @@
                "・ExtensionもComon Lispで書く"
                "・Language Server Protocol(LSP)のサポート")))
 
-(lem-slide:define-page about-lem-page-2 (buffer)
+(lem-slide:define-page support-languages (buffer)
   (draw-icon buffer)
-  (draw-header buffer "Lemとは")
-  (draw-list buffer
-             '("・自分が日常的に使えるもの"
-               "・Goなどにも対応"
-               "・対応言語数はおよそ30個")))
+  (draw-header buffer "対応言語数")
+  (draw-image buffer
+              *support-languages-image*
+              :x 10
+              :y 300
+              :width 673
+              :height 971))
 
 (lem-slide:define-page lem-scale-page (buffer)
   (draw-icon buffer)
@@ -171,21 +179,36 @@
                "    ・Multi column list component"
                "    ・Powerline")))
 
-(lem-slide:define-page bugs-page (buffer)
-  (draw-icon buffer)
+(lem-slide:define-page bugs-page-1 (buffer)
   (draw-header buffer "辛い問題")
+  (draw-image buffer
+              *keyboard-layout-image*
+              :x 2000
+              :y 0
+              :width 414
+              :height 1301)
   (draw-list buffer
              '("    ・修飾キーの取り扱い"
-               "    ・キーボード配列の扱い(JIS/US/etc...)"
-               "    ・キーイベントがOSによって違う"
-               "    ・フォント一覧の取得もOSによって違う")))
+               "    ・キーボード配列の扱い(JIS/US/etc...)")))
 
 (lem-slide:define-page bugs-page-2 (buffer)
-  (draw-icon buffer)
-  (draw-header buffer "辛い問題(2)")
+  (draw-header buffer "辛い問題")
   (draw-list buffer
-             '("    ・GPUのドライバによっては動かない"
-               "    ・サスペンドから復帰すると死ぬ")))
+             '("    ・キーイベントがOSによって違う"
+               "    ・フォント一覧の取得もOSによって違う"
+               "         ・Linux: Fontconfig"
+               "         ・Mac: ???"
+               "         ・Windows: ???")))
+
+(lem-slide:define-page bugs-page-3 (buffer)
+  (draw-header buffer "辛い問題")
+  (draw-image buffer
+              *sdl-error-1-image*
+              :x 10
+              :y 700)
+  (draw-list buffer
+             '("    ・サスペンドから復帰すると死ぬ事がある"
+               "    ・GPUのドライバによっては動かない")))
 
 (lem-slide:define-page what-is-next-page (buffer)
   (draw-icon buffer)
@@ -234,12 +257,13 @@
   (start-page
    agenda-page
    about-lem-page
-   about-lem-page-2
+   support-languages
    lem-scale-page
    lem-architecture-page
    add-2.0-sdl2-frontend-page
    add-2.0-look-and-feel-page
-   bugs-page
+   bugs-page-1
    bugs-page-2
+   bugs-page-3
    what-is-next-page
    contribute-and-feedback-page))
