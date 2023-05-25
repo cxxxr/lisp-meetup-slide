@@ -10,19 +10,21 @@
 
 (defvar *h1-font*
   (sdl2-ttf:open-font (path "NotoSansCJK-Regular.ttc") 300))
-
 (defvar *h2-font*
   (sdl2-ttf:open-font (path "NotoSansCJK-Regular.ttc") 150))
-
 (defvar *normal-font*
   (sdl2-ttf:open-font (path "NotoSansCJK-Regular.ttc") 100))
-
+(defvar *small-font*
+  (sdl2-ttf:open-font (path "NotoSansCJK-Regular.ttc") 50))
 (defvar *emoji-font*
   (sdl2-ttf:open-font (path "NotoColorEmoji.ttf") 20))
-
 (defvar *foreground-color* (make-color 255 255 255))
 
 (defvar *icon-image* (load-image (path "icon.png")))
+
+(defvar *lem-modules-image* (load-image "/Users/cxxxr/Desktop/lem-modules.png"))
+
+(defvar *release-image* (load-image (path "release.png")))
 
 (defvar *support-languages-image* (load-image (path "support-languages.png")))
 
@@ -36,6 +38,8 @@
 (defvar *sdl-error-1-image* (load-image (path "sdl-error-1.png")))
 (defvar *sdl-error-2-image* (load-image (path "sdl-error-2.png")))
 
+(defvar *next-architecture-image* (load-image (path "next-architecture.png")))
+
 (defvar *discord-qrcode-image* (load-image (path "discord.png")))
 (defvar *opencollective-qrcode-image* (load-image (path "opencollective.png")))
 
@@ -47,13 +51,13 @@
               :width 500
               :height 500))
 
-(defun draw-list (buffer strings)
+(defun draw-list (buffer strings &optional (offset-x 0) (offset-y 0))
   (loop :for string :in strings
         :for y := 260 :then (+ y 200)
         :do (draw-string buffer
                          string
-                         0
-                         y
+                         offset-x
+                         (+ y offset-y)
                          :font *normal-font*
                          :color *foreground-color*)))
 
@@ -91,7 +95,7 @@
 
 (lem-slide:define-page agenda-page (buffer)
   (draw-icon buffer)
-  (draw-header buffer "はじめに")
+  (draw-header buffer "今日のながれ")
   (draw-list buffer
              '("・Lemについての紹介"
                "・ver 2.0で追加した機能について"
@@ -103,12 +107,23 @@
   (draw-list buffer
              '("・Common Lisp IDE"
                "・Common Lisp製のEmacs Like Editor"
-               "・ExtensionもComon Lispで書く"
-               "・Language Server Protocol(LSP)のサポート")))
+               "      ・ExtensionもComon Lispで書く"
+               "・Language Server Protocol(LSP)のクライアント")))
+
+(lem-slide:define-page lem-editor-modules-page (buffer)
+  (draw-header buffer "Lem Editor Modules (Lem)")
+  (draw-list buffer
+             '("・エディタ用の各モジュールで構成される")
+             0
+             -10)
+  (draw-image buffer
+              *lem-modules-image*
+              :x 100
+              :y 400))
 
 (lem-slide:define-page support-languages (buffer)
   (draw-icon buffer)
-  (draw-header buffer "対応言語数")
+  (draw-header buffer "対応言語")
   (draw-image buffer
               *support-languages-image*
               :x 10
@@ -130,7 +145,7 @@
 
 (lem-slide:define-page lem-architecture-page (buffer)
   (draw-icon buffer)
-  (draw-header buffer "構成")
+  (draw-header buffer "Architecture")
   (draw-image buffer
               *architecture-image*
               :x 10
@@ -163,11 +178,15 @@
 (lem-slide:define-page add-2.0-sdl2-frontend-page (buffer)
   (draw-icon buffer)
   (draw-header buffer "2.0の新機能")
+  (draw-image buffer *release-image*
+              :x 1500 :y 700
+              :width (floor (* 397 2))
+              :height (floor (* 271 2)))
   (draw-list buffer
              '("    SDL2 frontend"
                "    ・Graphics"
                "    ・マウスサポート"
-               "    ・windowsサポート")))
+               "    windows")))
 
 (lem-slide:define-page add-2.0-look-and-feel-page (buffer)
   (draw-icon buffer)
@@ -180,7 +199,7 @@
                "    ・Powerline")))
 
 (lem-slide:define-page bugs-page-1 (buffer)
-  (draw-header buffer "辛い問題")
+  (draw-header buffer "SDL2の辛い問題")
   (draw-image buffer
               *keyboard-layout-image*
               :x 2000
@@ -192,7 +211,7 @@
                "    ・キーボード配列の扱い(JIS/US/etc...)")))
 
 (lem-slide:define-page bugs-page-2 (buffer)
-  (draw-header buffer "辛い問題")
+  (draw-header buffer "SDL2の辛い問題")
   (draw-list buffer
              '("    ・キーイベントがOSによって違う"
                "    ・フォント一覧の取得もOSによって違う"
@@ -201,7 +220,7 @@
                "         ・Windows: ???")))
 
 (lem-slide:define-page bugs-page-3 (buffer)
-  (draw-header buffer "辛い問題")
+  (draw-header buffer "SDL2の辛い問題")
   (draw-image buffer
               *sdl-error-1-image*
               :x 10
@@ -212,12 +231,8 @@
 
 (lem-slide:define-page what-is-next-page (buffer)
   (draw-icon buffer)
-  (draw-header buffer "次にすること")
-  (draw-list buffer
-             '("    ・Lisp ModeとLSPの統合"
-               "    ・Lisp ModeとGraphics機能の統合"
-               "    ・Trial(ゲームエンジン)との統合"
-               "    ・ドキュメントの整備")))
+  (draw-header buffer "Lemはどこへ向かうのか")
+  (draw-image buffer *next-architecture-image* :x 10 :y 300))
 
 (lem-slide:define-page contribute-and-feedback-page (buffer)
   (draw-string buffer
@@ -253,10 +268,17 @@
               :x 1500
               :y 500))
 
+(lem-slide:define-page about-this-slide (buffer)
+  (draw-header buffer "このスライドについて")
+  (draw-list buffer
+             '("    ・Lemでプレゼンテーションツールを作りました"
+               "    ・https://github.com/cxxxr/lisp-meetup-slide")))
+
 (lem-slide:define-slide lem-v2.0
   (start-page
    agenda-page
    about-lem-page
+   lem-editor-modules-page
    support-languages
    lem-scale-page
    lem-architecture-page
@@ -266,4 +288,5 @@
    bugs-page-2
    bugs-page-3
    what-is-next-page
-   contribute-and-feedback-page))
+   contribute-and-feedback-page
+   about-this-slide))
