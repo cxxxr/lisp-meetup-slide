@@ -22,7 +22,7 @@
 
 (defvar *icon-image* (load-image (path "icon.png")))
 
-(defvar *lem-modules-image* (load-image "/Users/cxxxr/Desktop/lem-modules.png"))
+(defvar *lem-modules-image* (load-image (path "lem-modules.png")))
 
 (defvar *release-image* (load-image (path "release.png")))
 
